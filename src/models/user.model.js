@@ -1,65 +1,61 @@
+import mongoose, { Schema } from "mongoose";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-import mongoose, { Schema } from "mongoose"
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
-
-
-const userSchema= new Schema(
-    {
-        firstName: {
-            type: String,
-            require: true,
-            lowercase: true,
-            trim: true,
-        },
-          lastName: {
-            type: String,
-            require: true,
-            trim: true,
-            lowercase: true,
-          },
-
-          mobile:{
-            type:String,
-            require:true,
-            unique:true,
-            index:true,
-            trim:true
-
-          },
-        email: {
-            type: String,
-            require: true,
-            unique: true,
-            lowercase: true,
-            trim: true,
-            index:true
-          },
-         
-          avatar: {
-            type: String, //cloudnary url
-            required: true,
-          },
-        
-        
-          password: {
-            type: String,
-            required: [true, "Password is required"],
-          },
-          refreshToken: {
-            type: String,
-          },
+const userSchema = new Schema(
+  {
+    firstName: {
+      type: String,
+      require: true,
+      lowercase: true,
+      trim: true,
     },
-    {
-        timestamps:true
-    }
-)
+    lastName: {
+      type: String,
+      require: true,
+      trim: true,
+      lowercase: true,
+    },
 
-userSchema.pre("save",async function(next){
-  if(!this.isModified("password")) return next();
-  this.password= await bcrypt.hash(this.password,10)
+    mobile: {
+      type: String,
+      require: true,
+      unique: true,
+      index: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      require: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
+
+    avatar: {
+      type: String, //cloudnary url
+      required: true,
+    },
+
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+    },
+    refreshToken: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  this.password = await bcrypt.hash(this.password, 10);
   next();
-})
+});
 
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
@@ -72,7 +68,7 @@ userSchema.methods.generateAccessToken = function () {
       email: this.email,
       firstName: this.firstName,
       lastName: this.lastName,
-      mobile:this.mobile
+      mobile: this.mobile,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -91,5 +87,4 @@ userSchema.methods.generateRefreshToken = function () {
     }
   );
 };
-
-export const User=mongoose.model("User",userSchema)
+export const User = mongoose.model("User", userSchema);
