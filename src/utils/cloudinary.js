@@ -12,6 +12,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     if (!localFilePath) return null;
     //upload the file on cloudnary
     const response = await cloudinary.uploader.upload(localFilePath, {
+      folder: "Advocate diary",
       resource_type: "auto",
     });
     // file has been successfully uplaoaded
