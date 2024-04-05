@@ -5,6 +5,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
 });
 
 const uploadOnCloudinary = async (localFilePath, folderPath) => {
@@ -25,24 +26,51 @@ const uploadOnCloudinary = async (localFilePath, folderPath) => {
   }
 };
 
-const deleteOnCloudniary = async (fileUrl) => {
-  try {
-    if (!fileUrl) {
-      return "!file url";
-    }
-    const imageArray = fileUrl.split("/");
+// const deleteOnCloudniary = async (fileUrl) => {
+//   try {
+//     if (!fileUrl) {
+//       return "!file url";
+//     }
+//     const imageArray = fileUrl.split("/");
+//     console.log("image array=====>", imageArray);
 
-    const imageName = imageArray[imageArray.length - 1].split(".")[0];
+//     const imageName = imageArray[imageArray.length - 1].split(".")[0];
 
-    const result = await cloudinary.uploader.destroy(
-      imageName,
-      (error, result) => {
-        console.log(error);
-      }
-    );
-    return result;
-  } catch (error) {
-    return "error occured";
+//     console.log("image name=-======>", imageName);
+
+//     const result = await cloudinary.uploader.destroy(
+//       imageName,
+
+//       (error, result) => {
+//         console.log(error);
+//       }
+//     );
+//     return result;
+//   } catch (error) {
+//     return "error occured";
+//   }
+// };
+
+const deleteResource = async (fileUrl) => {
+  if (!fileUrl) {
+    return "!file url not found";
   }
+
+  // http://res.cloudinary.com/amanchaurasiya/image/upload/v1712229934/Advocate%20diary/Avatars/zzjhovtynduza6dwgoc4.jpg
+  // cloudinary.v2.api
+  // .delete_resources(['Advocate diary/Avatars/w2iemt6wtwz5pz8lbfzw'],
+  //   { type: 'upload', resource_type: 'image' })
+  // .then(console.log);
+
+  const imageArray = fileUrl.split("/");
+
+  const imageName = imageArray[imageArray.length - 1].split(".")[0];
+
+  const result = await cloudinary.api.delete_resources([
+    `Advocate diary/Avatars/${imageName}`,
+  ]);
+
+  return result;
 };
-export { uploadOnCloudinary, deleteOnCloudniary };
+
+export { uploadOnCloudinary, deleteResource };

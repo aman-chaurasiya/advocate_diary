@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadOnCloudinary, deleteResource } from "../utils/cloudinary.js";
 import { ApiResponse } from "./../utils/ApiResponse.js";
 import fs from "fs";
 
@@ -222,10 +222,52 @@ const getCurrentUser = asyncHandler(async (req, resp) => {
       new ApiResponse(200, req.user, "current user fetched successfully!!")
     );
 });
-// const testing = asyncHandler(async (req, resp) => {
-//   const avatar = req.file.path;
-//   return resp.status(200).json(new ApiResponse(200, avatar, " successfully:"));
-// });
+
+const UpdateUserAvatar = asyncHandler(async (req, resp) => {
+  const avatarLocalPath = req.file?.path;
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is missing");
+  }
+
+  const avatar = await uploadOnCloudinary(avatarLocalPath, "Avatars");
+  if (!avatar.url) {
+    throw new ApiError(400, "Error on uplaoding avatar");
+  }
+  const imageurl = req.user.avatar;
+  const result = await deleteResource(imageurl);
+
+  console.log("result delelted", result);
+
+  const user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $set: {
+        avatar: avatar.url,
+      },
+    },
+    { new: true }
+  ).select("-password -refreshToken");
+
+  return resp
+    .status(200)
+    .json(new ApiResponse(200, user, "avatar update successful"));
+});
+
+const testing = asyncHandler(async (req, resp) => {
+  // const avatarLocalPath = req.file.path;
+  // if (!avatarLocalPath) {
+  //   throw new ApiError(400, "Avatar file is missing");
+  // }
+  // console.log(avatarLocalPath);
+  // const avatar = await uploadOnCloudinary(avatarLocalPath);
+  // if (!avatar.url) {
+  //   throw new ApiError(400, "Error on uplaoding avatar");
+  // }
+  return resp
+    .status(200)
+    .json(new ApiResponse(200, avatarLocalPath, " successfully:"));
+});
 
 export {
   registerUser,
@@ -234,4 +276,6 @@ export {
   refreshAccessToken,
   changeCurrentPassword,
   getCurrentUser,
+  UpdateUserAvatar,
+  testing,
 };
