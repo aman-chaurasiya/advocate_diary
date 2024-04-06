@@ -6,6 +6,7 @@ import { uploadOnCloudinary, deleteResource } from "../utils/cloudinary.js";
 import { ApiResponse } from "./../utils/ApiResponse.js";
 import fs from "fs";
 
+// on mastar branch
 const generateAccessAndRefreshToken = async (userId) => {
   try {
     const user = await User.findById(userId);
