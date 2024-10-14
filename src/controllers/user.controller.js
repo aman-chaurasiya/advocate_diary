@@ -108,6 +108,7 @@ const loginUser = asyncHandler(async (req, resp) => {
     httpOnly: true,
     secure: true,
   };
+  console.log("testing changing and deploying");
 
   return resp
     .status(200)
