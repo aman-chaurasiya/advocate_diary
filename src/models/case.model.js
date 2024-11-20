@@ -5,28 +5,28 @@ const courtCaseSchema = new Schema(
   {
     caseNumber: {
       type: String,
-      required: true,
+      require: true,
       unique: true, // Ensure case numbers are unique
       trim: true,
     },
     caseTitle: {
       type: String,
-      required: true,
+      require: true,
       trim: true,
     },
     caseType: {
       type: String,
-      required: true,
+      require: true,
       enum: ["Civil", "Criminal", "Family", "Commercial", "Labor"], // You can add more types based on your needs
     },
     plaintiff: {
-      type: String, //
-      required: true,
+      type: String, // vadi,party
+      require: true,
       trim: true,
     },
     defendant: {
-      type: String,
-      required: true,
+      type: String, //opposite
+      require: true,
       trim: true,
     },
     caseStatus: {
@@ -36,14 +36,14 @@ const courtCaseSchema = new Schema(
     },
     filedDate: {
       type: Date,
-      required: true,
+      require: true,
       default: Date.now, // Automatically set to current date if not provided
     },
     hearingDates: [
       {
         date: {
           type: Date,
-          // required: true,
+          require: true,
         },
         description: {
           type: String,

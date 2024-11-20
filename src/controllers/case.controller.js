@@ -13,6 +13,7 @@ const addNewCase = asyncHandler(async (req, resp) => {
     caseStatus,
     filedDate,
   } = req.body;
+
   if (
     [
       caseNumber,

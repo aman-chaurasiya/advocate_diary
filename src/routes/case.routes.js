@@ -4,6 +4,6 @@ import { addNewCase } from "../controllers/case.controller.js";
 
 const router = Router();
 
-router.route("/AddNewCase").post(addNewCase);
+router.route("/addNewCase").post(addNewCase);
 
 export default router;
