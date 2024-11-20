@@ -1,53 +1,81 @@
 import mongoose, { Schema } from "mongoose";
 
-const caseSchema = new Schema(
+// Define the Court Case schema
+const courtCaseSchema = new Schema(
   {
     caseNumber: {
       type: String,
-      require: true,
-      lowercase: true,
+      required: true,
+      unique: true, // Ensure case numbers are unique
       trim: true,
     },
-    caseName: {
+    caseTitle: {
       type: String,
-      require: true,
-      lowercase: true,
+      required: true,
       trim: true,
     },
     caseType: {
       type: String,
-      lowercase: true,
+      required: true,
+      enum: ["Civil", "Criminal", "Family", "Commercial", "Labor"], // You can add more types based on your needs
+    },
+    plaintiff: {
+      type: String, //
+      required: true,
       trim: true,
     },
-
-    priviousDate: {
+    defendant: {
       type: String,
-      lowercase: true,
+      required: true,
       trim: true,
     },
-    nextDate: {
+    caseStatus: {
       type: String,
-      lowercase: true,
+      enum: ["Pending", "In Progress", "Resolved", "Dismissed", "Closed"],
+      default: "Pending",
+    },
+    filedDate: {
+      type: Date,
+      required: true,
+      default: Date.now, // Automatically set to current date if not provided
+    },
+    hearingDates: [
+      {
+        date: {
+          type: Date,
+          // required: true,
+        },
+        description: {
+          type: String,
+          trim: true,
+        },
+      },
+    ],
+    judgmentDate: {
+      type: Date,
+    },
+    judgment: {
+      type: String,
       trim: true,
     },
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+    lawyer: {
+      name: {
+        type: String,
+        trim: true,
+      },
+      contact: {
+        type: String,
+        trim: true,
+      },
     },
-
-    // advocateName: {},
-    // courtName: {},
-    // judgeName: {}, // optional
-
-    // partyName: {},
-    // partyAddress: {},
-    // partyContact: {},
-    // antiPartyName: {},
-    // antiPartyContact: {},
-    // antiPartyAdvocate: {},
+    notes: {
+      type: String,
+      trim: true,
+    },
   },
   {
-    timestamps: true,
+    timestamps: true, // Automatically add createdAt and updatedAt fields
   }
 );
-export const Case = mongoose.model("Case", caseSchema);
+
+export const CourtCase = mongoose.model("CourtCase", courtCaseSchema);

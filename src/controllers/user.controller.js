@@ -5,6 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary, deleteResource } from "../utils/cloudinary.js";
 import { ApiResponse } from "./../utils/ApiResponse.js";
 import fs from "fs";
+import { CourtCase } from "../models/case.model.js";
 
 // on mastar branch
 const generateAccessAndRefreshToken = async (userId) => {
@@ -104,6 +105,7 @@ const loginUser = asyncHandler(async (req, resp) => {
   const loggedInUser = await User.findById(user._id).select(
     "-password -refreshToken"
   );
+  console.log(loggedInUser);
   const options = {
     httpOnly: true,
     secure: true,
